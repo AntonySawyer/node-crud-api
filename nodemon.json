@@ -3,7 +3,6 @@
     "ts": "ts-node"
   },
   "watch": [
-    "./index.ts",
     "src"
   ],
   "ext": ".ts"
