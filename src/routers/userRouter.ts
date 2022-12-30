@@ -47,8 +47,8 @@ class UserRouter implements IRouter {
         break;
 
       case METHOD.PUT:
-        if (body) {
-          UserConroller.updateUser(response, body);
+        if (userId && body) {
+          UserConroller.updateUser(response, userId, body);
         } else {
           // TODO: throw error
         }
