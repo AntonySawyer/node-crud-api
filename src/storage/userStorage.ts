@@ -1,4 +1,8 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { IUser, IUserForm } from '../interface/user';
+import { AppError, NotFoundError } from '../constants/error/index';
+import { COMMON_ERROR_MESSAGE } from '../constants/error';
 
 type UserStorageInitial = {
   users?: IUser[];
@@ -11,34 +15,43 @@ class UserStorageInterface {
 
   private users;
 
-  public getUsers(): IUser[] {
-    return this.users;
+  public async getUsers(): Promise<IUser[]> {
+    if (this.users) {
+      return this.users;
+    }
+
+    throw new AppError(COMMON_ERROR_MESSAGE);
   }
 
-  public getUserById(id: IUser['id']): IUser | null {
+  public async getUserByIdOrThrowNotFound(id: string): Promise<IUser | null> {
     const user = this.users.find((userItem) => userItem.id === id);
 
     if (user) {
       return user;
     }
 
-    return null;
-    // TODO: 404
+    throw new NotFoundError();
   }
 
-  public createUser(newUser: IUserForm): IUser {
-    const uuid = (this.users.length + 1).toString(); // TODO: replace with uuid library
-    const user: IUser = {
-      ...newUser,
-      id: uuid,
-    };
+  public async createUser(newUser: IUserForm): Promise<IUser> {
+    try {
+      const uuid = uuidv4();
+      const user: IUser = {
+        ...newUser,
+        id: uuid,
+      };
 
-    this.users.push(user);
+      this.users.push(user);
 
-    return user;
+      return user;
+    } catch (error) {
+      throw new AppError(COMMON_ERROR_MESSAGE);
+    }
   }
 
-  public updateUser(userId: IUser['id'], userToUpdate: IUserForm): IUser {
+  public async updateUser(userId: string, userToUpdate: IUserForm): Promise<IUser> {
+    await this.getUserByIdOrThrowNotFound(userId);
+
     const updatedUser: IUser = {
       id: userId,
       ...userToUpdate,
@@ -57,7 +70,9 @@ class UserStorageInterface {
     return updatedUser;
   }
 
-  public deleteUserById(id: IUser['id']): void {
+  public async deleteUserById(id: string): Promise<void> {
+    await this.getUserByIdOrThrowNotFound(id);
+
     const usersWithoutDeleted = this.users.filter((userItem) => userItem.id !== id);
 
     this.users = usersWithoutDeleted;

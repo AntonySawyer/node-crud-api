@@ -1,29 +1,19 @@
 import http, { RequestListener } from 'http';
-import url from 'url';
 
+import { AppError } from './constants/error/index';
 import { HOST, PORT } from './constants/main';
-import { ROUTE } from './constants/routes';
-import userRouter from './routers/userRouter';
+import { combineResponseWithError } from './utils/combineResponse';
+import { navigateRequestToProcessing } from './utils/navigateRequestToProcessing';
 
-const requestListener: RequestListener = (request, response) => {
-  const { pathname } = url.parse(request.url as string);
-
-  if (!pathname) {
-    // TODO: return 404 + message
-    return;
+const requestListenerWithErrorHandling: RequestListener = async (request, response) => {
+  try {
+    navigateRequestToProcessing(request, response);
+  } catch (error) {
+    combineResponseWithError(response, error as AppError);
   }
-
-  if (pathname?.includes(ROUTE.USERS)) {
-    userRouter.processRequest(request, response);
-
-    return;
-  }
-
-  // TODO: return 404 + message
-  console.log('404');
 };
 
-const server = http.createServer(requestListener);
+const server = http.createServer(requestListenerWithErrorHandling);
 
 server.listen(PORT, HOST, () => {
   console.log(`Server at ${HOST}:${PORT}`);
