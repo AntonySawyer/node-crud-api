@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { IUser, IUserForm } from '../interface/user';
-import { AppError, NotFoundError } from '../constants/error/index';
+import { AppError, NotFoundError, InternalError } from '../constants/error/index';
 import { COMMON_ERROR_MESSAGE } from '../constants/error';
 
 type UserStorageInitial = {
@@ -20,7 +20,7 @@ class UserStorageInterface {
       return this.users;
     }
 
-    throw new AppError(COMMON_ERROR_MESSAGE);
+    throw new InternalError();
   }
 
   public async getUserByIdOrThrowNotFound(id: string): Promise<IUser | null> {

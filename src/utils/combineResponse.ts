@@ -7,7 +7,7 @@ import {
   ValidationError,
 } from '../constants/error/index';
 import { CONTENT_TYPE, STATUS_CODE } from '../constants/main';
-import { COMMON_ERROR_MESSAGE } from '../constants/error';
+import { INTERNAL_ERROR_MESSAGE } from '../constants/error';
 
 export const combineResponse = <TBody>(response: ServerResponse, code: STATUS_CODE, body?: TBody): void => {
   response.setHeader('Content-Type', CONTENT_TYPE.APP_JSON);
@@ -28,7 +28,7 @@ export const combineResponseWithError = (
   error: AppError,
 ): void => {
   // console.error(error);
-  const errorMessage: string = error.message || COMMON_ERROR_MESSAGE;
+  const errorMessage: string = error.message || INTERNAL_ERROR_MESSAGE;
   let statusCode: STATUS_CODE = STATUS_CODE.INTERNAL_SERVER_ERROR;
 
   if (error instanceof NotFoundError) {
