@@ -1,9 +1,12 @@
+import * as dotenv from 'dotenv';
 import http, { RequestListener } from 'http';
 
 import { AppError } from './constants/error/index';
-import { HOST, PORT } from './constants/main';
 import { combineResponseWithError } from './utils/combineResponse';
 import { navigateRequestToProcessing } from './utils/navigateRequestToProcessing';
+
+dotenv.config();
+const { PORT } = process.env;
 
 const requestListenerWithErrorHandling: RequestListener = async (request, response) => {
   try {
@@ -15,6 +18,7 @@ const requestListenerWithErrorHandling: RequestListener = async (request, respon
 
 const server = http.createServer(requestListenerWithErrorHandling);
 
-server.listen(PORT, HOST, () => {
-  console.log(`Server at ${HOST}:${PORT}`);
+server.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Server at port ${PORT}`);
 });

@@ -1,6 +1,3 @@
-export const PORT = 4000; // TODO
-export const HOST = 'localhost';
-
 export enum METHOD {
   GET = 'GET',
   POST = 'POST',
