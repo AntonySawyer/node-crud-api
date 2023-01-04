@@ -35,7 +35,7 @@ export const createUser = async (response: ServerResponse, newUser: IUserRequest
 
     const user = await storage.createUser(newUser);
 
-    combineResponse(response, STATUS_CODE.OK, user);
+    combineResponse(response, STATUS_CODE.CREATED, user);
   } catch (error) {
     combineResponseWithError(response, error as AppError);
   }

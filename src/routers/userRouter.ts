@@ -9,7 +9,6 @@ import { getRequestBody } from '../utils/requestBody';
 import { IRouter } from '../interface/main';
 import userValidatorInstance from '../validation/UserValidator';
 import { combineResponseWithError } from '../utils/combineResponse';
-import { COMMON_ERROR_MESSAGE } from '../constants/error';
 import { BadRequestError, NotFoundError, ValidationError } from '../constants/error/index';
 
 class UserRouter implements IRouter {
@@ -64,10 +63,7 @@ class UserRouter implements IRouter {
         break;
 
       default:
-        combineResponseWithError(
-          response,
-          new BadRequestError(COMMON_ERROR_MESSAGE),
-        );
+        this.sendBadRequestError();
     }
   }
 
@@ -156,25 +152,31 @@ class UserRouter implements IRouter {
     };
   }
 
+  private sendBadRequestError(error?: string) {
+    if (!this.response) {
+      return;
+    }
+
+    combineResponseWithError(
+      this.response,
+      new BadRequestError(error),
+    );
+  }
+
   private async getBodyOrResponseWithError(request: IncomingMessage): Promise<IUserRequest | null> {
     if (!this.response) {
       return null;
     }
 
-    const body = await getRequestBody<IUserRequest>(request);
+    try {
+      const body = await getRequestBody<IUserRequest>(request);
 
-    const isRequestPossible = body !== null;
-
-    if (!isRequestPossible) {
-      combineResponseWithError(
-        this.response,
-        new BadRequestError(COMMON_ERROR_MESSAGE),
-      );
+      return body;
+    } catch (error) {
+      this.sendBadRequestError(error as string);
 
       return null;
     }
-
-    return body;
   }
 }
 

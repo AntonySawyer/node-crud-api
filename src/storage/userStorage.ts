@@ -36,8 +36,12 @@ class UserStorageInterface {
   public async createUser(newUser: IUserRequest): Promise<IUserResponse> {
     try {
       const uuid = uuidv4();
+      const { age, hobbies, username } = newUser;
+
       const user: IUserResponse = {
-        ...newUser,
+        age,
+        hobbies,
+        username,
         id: uuid,
       };
 

@@ -2,6 +2,7 @@ import { FIELD_TYPE } from '../constants/main';
 import { IUserRequest } from '../interface/user';
 import {
   validateAge,
+  validateArrayElements,
   validateFieldType,
   validateRequiredField,
   validateUuid,
@@ -38,6 +39,7 @@ class UserValidator {
     validateFieldType(user, 'age', FIELD_TYPE.NUMBER);
     validateFieldType(user, 'hobbies', FIELD_TYPE.ARRAY);
     validateFieldType(user, 'username', FIELD_TYPE.STRING);
+    validateArrayElements(user.hobbies, FIELD_TYPE.STRING, 'hobbies');
     validateAge(user.age, this.minAge);
   }
 }

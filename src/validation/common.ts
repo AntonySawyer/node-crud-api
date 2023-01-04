@@ -1,7 +1,11 @@
 import { validate as uuidValidate } from 'uuid';
 
 import { FIELD_TYPE } from '../constants/main';
-import { getRequiredErrorMessage, getSomethingWrongWithFieldErrorMessage } from '../utils/error';
+import {
+  getRequiredErrorMessage,
+  getIncorrectFieldTypeErrorMessage,
+  getIncorrectArrayElementTypeErrorMessage,
+} from '../utils/error';
 import {
   INCORRECT_AGE_ERROR_MESSAGE,
   INVALID_UUID_ERROR_MESSAGE,
@@ -37,27 +41,22 @@ export const validateRequiredField = <TObject>(
   }
 };
 
-export const validateFieldType = <TObject>(
-  object: TObject,
-  fieldName: keyof TObject,
-  fieldType: FIELD_TYPE,
-): void => {
-  const fieldValue = object[fieldName];
+const validateType = <TValue>(value: TValue, type: FIELD_TYPE): boolean => {
   let isFieldTypeValid = false;
 
-  switch (fieldType) {
+  switch (type) {
     case FIELD_TYPE.ARRAY:
-      isFieldTypeValid = Array.isArray(fieldValue);
+      isFieldTypeValid = Array.isArray(value);
 
       break;
 
     case FIELD_TYPE.NUMBER:
-      isFieldTypeValid = typeof fieldValue === 'number';
+      isFieldTypeValid = typeof value === 'number';
 
       break;
 
     case FIELD_TYPE.STRING:
-      isFieldTypeValid = typeof fieldValue === 'string';
+      isFieldTypeValid = typeof value === 'string';
 
       break;
 
@@ -67,8 +66,19 @@ export const validateFieldType = <TObject>(
       break;
   }
 
+  return isFieldTypeValid;
+};
+
+export const validateFieldType = <TObject>(
+  object: TObject,
+  fieldName: keyof TObject,
+  fieldType: FIELD_TYPE,
+): void => {
+  const fieldValue = object[fieldName];
+  const isFieldTypeValid = validateType(fieldValue, fieldType);
+
   if (!isFieldTypeValid) {
-    const errorMessage = getSomethingWrongWithFieldErrorMessage(fieldName as string);
+    const errorMessage = getIncorrectFieldTypeErrorMessage(fieldName as string, fieldType);
 
     throw new ValidationError(errorMessage);
   }
@@ -87,6 +97,20 @@ export const validateAge = (age: number, minAge: number): void => {
 
   if (!isValidAge) {
     const errorMessage = INCORRECT_AGE_ERROR_MESSAGE;
+
+    throw new ValidationError(errorMessage);
+  }
+};
+
+export const validateArrayElements = <TArrayEl>(array: TArrayEl[], expectedType: FIELD_TYPE, fieldName: string) => {
+  const someElementHaveWrongType = array.some((element) => {
+    const isValueHaveValidType = validateType(element, expectedType);
+
+    return !isValueHaveValidType;
+  });
+
+  if (someElementHaveWrongType) {
+    const errorMessage = getIncorrectArrayElementTypeErrorMessage(fieldName as string, expectedType);
 
     throw new ValidationError(errorMessage);
   }
