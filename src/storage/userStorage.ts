@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { IUser, IUserForm } from '../interface/user';
+import { IUserResponse, IUserRequest } from '../interface/user';
 import { AppError, NotFoundError, InternalError } from '../constants/error/index';
 import { COMMON_ERROR_MESSAGE } from '../constants/error';
 
 type UserStorageInitial = {
-  users?: IUser[];
+  users?: IUserResponse[];
 };
 
 class UserStorageInterface {
@@ -15,7 +15,7 @@ class UserStorageInterface {
 
   private users;
 
-  public async getUsers(): Promise<IUser[]> {
+  public async getUsers(): Promise<IUserResponse[]> {
     if (this.users) {
       return this.users;
     }
@@ -23,7 +23,7 @@ class UserStorageInterface {
     throw new InternalError();
   }
 
-  public async getUserByIdOrThrowNotFound(id: string): Promise<IUser | null> {
+  public async getUserByIdOrThrowNotFound(id: string): Promise<IUserResponse | null> {
     const user = this.users.find((userItem) => userItem.id === id);
 
     if (user) {
@@ -33,10 +33,10 @@ class UserStorageInterface {
     throw new NotFoundError();
   }
 
-  public async createUser(newUser: IUserForm): Promise<IUser> {
+  public async createUser(newUser: IUserRequest): Promise<IUserResponse> {
     try {
       const uuid = uuidv4();
-      const user: IUser = {
+      const user: IUserResponse = {
         ...newUser,
         id: uuid,
       };
@@ -49,10 +49,10 @@ class UserStorageInterface {
     }
   }
 
-  public async updateUser(userId: string, userToUpdate: IUserForm): Promise<IUser> {
+  public async updateUser(userId: string, userToUpdate: IUserRequest): Promise<IUserResponse> {
     await this.getUserByIdOrThrowNotFound(userId);
 
-    const updatedUser: IUser = {
+    const updatedUser: IUserResponse = {
       id: userId,
       ...userToUpdate,
     };

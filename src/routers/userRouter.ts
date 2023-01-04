@@ -4,7 +4,7 @@ import url from 'url';
 import { METHOD } from '../constants/main';
 import * as UserConroller from '../controllers/userController';
 import { ROUTE } from '../constants/routes';
-import { IUser, IUserRouteArguments } from '../interface/user';
+import { IUserRequest, IUserRouteArguments } from '../interface/user';
 import { getRequestBody } from '../utils/requestBody';
 import { IRouter } from '../interface/main';
 import userValidatorInstance from '../validation/UserValidator';
@@ -13,12 +13,14 @@ import { COMMON_ERROR_MESSAGE } from '../constants/error';
 import { BadRequestError, NotFoundError, ValidationError } from '../constants/error/index';
 
 class UserRouter implements IRouter {
+  private response: ServerResponse | undefined;
+
   private routerBase = ROUTE.USERS;
 
   async processRequest(request: IncomingMessage, response: ServerResponse) {
-    const { pathname } = url.parse(request.url as string);
+    this.response = response;
 
-    const routeArgs = await this.parseRouteIfValidOrReturnError(pathname as string, response);
+    const routeArgs = await this.parseRouteIfValidOrResponseWithError(request, response);
     const canContinueProcessing = routeArgs !== null;
 
     if (!canContinueProcessing) {
@@ -40,46 +42,24 @@ class UserRouter implements IRouter {
       }
     }
 
-    const body = await getRequestBody<IUser>(request);
-
     switch (request.method) {
       case METHOD.GET:
-        if (userId) {
-          UserConroller.getUserByIdOrThrowNotFound(response, userId);
-
-          break;
-        }
-
-        UserConroller.getAllUsers(response);
+        this.processGetRequest(userId);
 
         break;
 
       case METHOD.POST:
-        if (body) {
-          UserConroller.createUser(response, body);
-        } else {
-          combineResponseWithError(
-            response,
-            new BadRequestError(COMMON_ERROR_MESSAGE),
-          );
-        }
+        this.processPostRequest(request);
 
         break;
 
       case METHOD.PUT:
-        if (userId && body) {
-          UserConroller.updateUser(response, userId, body);
-        } else {
-          combineResponseWithError(
-            response,
-            new BadRequestError(COMMON_ERROR_MESSAGE),
-          );
-        }
+        this.processPutRequest(request, userId);
 
         break;
 
       case METHOD.DELETE:
-        UserConroller.deleteUserById(response, userId);
+        this.processDeleteRequest(userId);
 
         break;
 
@@ -89,6 +69,56 @@ class UserRouter implements IRouter {
           new BadRequestError(COMMON_ERROR_MESSAGE),
         );
     }
+  }
+
+  private async processGetRequest(userId?: string) {
+    if (!this.response) {
+      return;
+    }
+
+    if (userId) {
+      UserConroller.getUserByIdOrThrowNotFound(this.response, userId);
+
+      return;
+    }
+
+    UserConroller.getAllUsers(this.response);
+  }
+
+  private async processPostRequest(request: IncomingMessage) {
+    if (!this.response) {
+      return;
+    }
+
+    const body = await this.getBodyOrResponseWithError(request);
+
+    const isRequestPossible = body !== null;
+
+    if (isRequestPossible) {
+      UserConroller.createUser(this.response, body);
+    }
+  }
+
+  private async processPutRequest(request: IncomingMessage, userId: string) {
+    if (!this.response) {
+      return;
+    }
+
+    const body = await this.getBodyOrResponseWithError(request);
+
+    const isRequestPossible = body !== null;
+
+    if (isRequestPossible) {
+      UserConroller.updateUser(this.response, userId, body as IUserRequest);
+    }
+  }
+
+  private async processDeleteRequest(userId: string) {
+    if (!this.response) {
+      return;
+    }
+
+    UserConroller.deleteUserById(this.response, userId);
   }
 
   private isValidRoute(requestBase: string, uselessArgs?: string[]): boolean {
@@ -101,11 +131,13 @@ class UserRouter implements IRouter {
     return requestBase === this.routerBase;
   }
 
-  private async parseRouteIfValidOrReturnError(
-    pathname: string,
+  private async parseRouteIfValidOrResponseWithError(
+    request: IncomingMessage,
     response: ServerResponse,
   ): Promise<IUserRouteArguments | null> {
-    const [, baseUrl, userRoute, userId, ...rest] = pathname.split('/');
+    const { pathname } = url.parse(request.url as string);
+
+    const [, baseUrl, userRoute, userId, ...rest] = (pathname as string).split('/');
     const requestBase = `${baseUrl}/${userRoute}`;
 
     const isValidRoute = this.isValidRoute(requestBase, rest);
@@ -122,6 +154,27 @@ class UserRouter implements IRouter {
     return {
       userId,
     };
+  }
+
+  private async getBodyOrResponseWithError(request: IncomingMessage): Promise<IUserRequest | null> {
+    if (!this.response) {
+      return null;
+    }
+
+    const body = await getRequestBody<IUserRequest>(request);
+
+    const isRequestPossible = body !== null;
+
+    if (!isRequestPossible) {
+      combineResponseWithError(
+        this.response,
+        new BadRequestError(COMMON_ERROR_MESSAGE),
+      );
+
+      return null;
+    }
+
+    return body;
   }
 }
 

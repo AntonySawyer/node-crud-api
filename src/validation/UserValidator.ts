@@ -1,5 +1,5 @@
 import { FIELD_TYPE } from '../constants/main';
-import { IUser, IUserForm } from '../interface/user';
+import { IUserRequest } from '../interface/user';
 import {
   validateAge,
   validateFieldType,
@@ -12,7 +12,7 @@ class UserValidator {
 
   private readonly minAge = 1;
 
-  private readonly REQUIRED_FIELDS: Array<keyof IUserForm> = [
+  private readonly REQUIRED_FIELDS: Array<keyof IUserRequest> = [
     'age',
     'hobbies',
     'username',
@@ -22,16 +22,16 @@ class UserValidator {
     this.userIdValidator(id);
   }
 
-  public async validateUserForCreation(user: IUserForm): Promise<void> {
+  public async validateUserForCreation(user: IUserRequest): Promise<void> {
     await this.validateUserCommonFields(user);
   }
 
-  public async validateUserForUpdate(user: IUser, idFromUrl: string): Promise<void> {
+  public async validateUserForUpdate(user: IUserRequest, idFromUrl: string): Promise<void> {
     validateUuid(idFromUrl);
     await this.validateUserCommonFields(user);
   }
 
-  private async validateUserCommonFields(user: IUserForm): Promise<void> {
+  private async validateUserCommonFields(user: IUserRequest): Promise<void> {
     this.REQUIRED_FIELDS.forEach((field) => {
       validateRequiredField(user, field);
     });

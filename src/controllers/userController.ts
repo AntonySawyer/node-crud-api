@@ -2,14 +2,14 @@ import { ServerResponse } from 'http';
 
 import storage from '../storage/userStorage';
 import { STATUS_CODE } from '../constants/main';
-import { IUser, IUserForm } from '../interface/user';
+import { IUserResponse, IUserRequest } from '../interface/user';
 import { combineResponse, combineResponseWithError } from '../utils/combineResponse';
 import userValidatorInstance from '../validation/UserValidator';
 import { NotFoundError, AppError } from '../constants/error/index';
 
 export const getAllUsers = async (response: ServerResponse): Promise<void> => {
   try {
-    const users: IUser[] = await storage.getUsers();
+    const users: IUserResponse[] = await storage.getUsers();
 
     combineResponse(response, STATUS_CODE.OK, users);
   } catch (error) {
@@ -29,7 +29,7 @@ export const getUserByIdOrThrowNotFound = async (response: ServerResponse, id: s
   }
 };
 
-export const createUser = async (response: ServerResponse, newUser: IUserForm): Promise<void> => {
+export const createUser = async (response: ServerResponse, newUser: IUserRequest): Promise<void> => {
   try {
     await userValidatorInstance.validateUserForCreation(newUser);
 
@@ -41,7 +41,11 @@ export const createUser = async (response: ServerResponse, newUser: IUserForm): 
   }
 };
 
-export const updateUser = async (response: ServerResponse, userId: string, updatedUser: IUser): Promise<void> => {
+export const updateUser = async (
+  response: ServerResponse,
+  userId: string,
+  updatedUser: IUserRequest,
+): Promise<void> => {
   try {
     await userValidatorInstance.validateUserForUpdate(updatedUser, userId);
 
