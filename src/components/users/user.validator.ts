@@ -1,12 +1,9 @@
-import { FIELD_TYPE } from '../constants/main';
-import { IUserRequest } from '../interface/user';
-import {
-  validateAge,
-  validateArrayElements,
-  validateFieldType,
-  validateRequiredField,
-  validateUuid,
-} from './common';
+import { FIELD_TYPE } from '../../shared/validation/validation.constants';
+import { IUserRequest } from './user.interface';
+import { validateAge } from '../../shared/validation/specific/age.validator';
+import { validateRequiredField } from '../../shared/validation/common/required.validator';
+import { validateFieldType, validateArrayElementsType } from '../../shared/validation/common/type.validator';
+import { validateUuid } from '../../shared/validation/specific/uuid.validator';
 
 class UserValidator {
   private userIdValidator = validateUuid;
@@ -39,7 +36,7 @@ class UserValidator {
     validateFieldType(user, 'age', FIELD_TYPE.NUMBER);
     validateFieldType(user, 'hobbies', FIELD_TYPE.ARRAY);
     validateFieldType(user, 'username', FIELD_TYPE.STRING);
-    validateArrayElements(user.hobbies, FIELD_TYPE.STRING, 'hobbies');
+    validateArrayElementsType(user.hobbies, FIELD_TYPE.STRING, 'hobbies');
     validateAge(user.age, this.minAge);
   }
 }

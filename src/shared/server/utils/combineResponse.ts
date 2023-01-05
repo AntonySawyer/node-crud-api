@@ -5,9 +5,9 @@ import {
   BadRequestError,
   NotFoundError,
   ValidationError,
-} from '../constants/error/index';
-import { CONTENT_TYPE, STATUS_CODE } from '../constants/main';
-import { BAD_REQUEST_ERROR_MESSAGE, INTERNAL_ERROR_MESSAGE } from '../constants/error';
+} from '../../error/errorInstance';
+import { CONTENT_TYPE, STATUS_CODE } from '../http.constants';
+import { BAD_REQUEST_ERROR_MESSAGE, INTERNAL_ERROR_MESSAGE } from '../../error/error.message';
 
 export const combineResponse = <TBody>(response: ServerResponse, code: STATUS_CODE, body?: TBody): void => {
   response.setHeader('Content-Type', CONTENT_TYPE.APP_JSON);
@@ -27,6 +27,7 @@ export const combineResponseWithError = (
   response: ServerResponse,
   error: AppError,
 ): void => {
+  // TODO
   // console.error(error);
   let errorMessage: string = error.message || INTERNAL_ERROR_MESSAGE;
   let statusCode: STATUS_CODE = STATUS_CODE.INTERNAL_SERVER_ERROR;

@@ -17,9 +17,3 @@ export enum STATUS_CODE {
 export enum CONTENT_TYPE {
   APP_JSON = 'application/json',
 }
-
-export enum FIELD_TYPE {
-  ARRAY = 'ARRAY',
-  STRING = 'STRING',
-  NUMBER = 'NUMBER',
-}

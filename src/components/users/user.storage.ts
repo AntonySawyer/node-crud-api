@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { IUserResponse, IUserRequest } from '../interface/user';
-import { AppError, NotFoundError, InternalError } from '../constants/error/index';
-import { COMMON_ERROR_MESSAGE } from '../constants/error';
+import { IUserResponse, IUserRequest } from './user.interface';
+import { AppError, NotFoundError, InternalError } from '../../shared/error/errorInstance';
+import { COMMON_ERROR_MESSAGE } from '../../shared/error/error.message';
 
 type UserStorageInitial = {
   users?: IUserResponse[];

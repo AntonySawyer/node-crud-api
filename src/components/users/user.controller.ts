@@ -1,11 +1,11 @@
 import { ServerResponse } from 'http';
 
-import storage from '../storage/userStorage';
-import { STATUS_CODE } from '../constants/main';
-import { IUserResponse, IUserRequest } from '../interface/user';
-import { combineResponse, combineResponseWithError } from '../utils/combineResponse';
-import userValidatorInstance from '../validation/UserValidator';
-import { NotFoundError, AppError } from '../constants/error/index';
+import storage from './user.storage';
+import { STATUS_CODE } from '../../shared/server/http.constants';
+import { IUserResponse, IUserRequest } from './user.interface';
+import { combineResponse, combineResponseWithError } from '../../shared/server/utils/combineResponse';
+import userValidatorInstance from './user.validator';
+import { NotFoundError, AppError } from '../../shared/error/errorInstance';
 
 export const getAllUsers = async (response: ServerResponse): Promise<void> => {
   try {

@@ -1,4 +1,4 @@
-import { NOT_FOUND_ERROR_MESSAGE } from '../error';
+import { NOT_FOUND_ERROR_MESSAGE } from '../error.message';
 import { AppError } from './appError';
 
 export class NotFoundError extends AppError {

@@ -1,4 +1,4 @@
-import { INTERNAL_ERROR_MESSAGE } from '../error';
+import { INTERNAL_ERROR_MESSAGE } from '../error.message';
 import { AppError } from './appError';
 
 export class InternalError extends AppError {

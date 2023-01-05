@@ -1,15 +1,15 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import url from 'url';
 
-import { METHOD } from '../constants/main';
-import * as UserConroller from '../controllers/userController';
-import { ROUTE } from '../constants/routes';
-import { IUserRequest, IUserRouteArguments } from '../interface/user';
-import { getRequestBody } from '../utils/requestBody';
-import { IRouter } from '../interface/main';
-import userValidatorInstance from '../validation/UserValidator';
-import { combineResponseWithError } from '../utils/combineResponse';
-import { BadRequestError, NotFoundError, ValidationError } from '../constants/error/index';
+import { METHOD } from '../../shared/server/http.constants';
+import * as UserConroller from './user.controller';
+import { ROUTE } from '../../shared/server/routes';
+import { getRequestBody } from '../../shared/server/utils/requestBody';
+import { IRouter } from '../../shared/server/router.interface';
+import userValidatorInstance from './user.validator';
+import { combineResponseWithError } from '../../shared/server/utils/combineResponse';
+import { BadRequestError, NotFoundError, ValidationError } from '../../shared/error/errorInstance';
+import { IUserRouteArguments, IUserRequest } from './user.interface';
 
 class UserRouter implements IRouter {
   private response: ServerResponse | undefined;
