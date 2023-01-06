@@ -1,3 +1,5 @@
+export const API_URL_BASE = 'api';
+
 export enum METHOD {
   GET = 'GET',
   POST = 'POST',
