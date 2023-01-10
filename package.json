@@ -6,9 +6,13 @@
   "scripts": {
     "start:prod": "cross-env tsc && webpack && rm -r ./build && node ./bundle/bundle.js",
     "start:dev": "cross-env nodemon ./src/index.ts",
+    "start:multi": "USE_CLUSTER=true npm run start:dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "repository": {
     "type": "git",

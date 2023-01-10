@@ -1,3 +1,4 @@
+export const DEFAULT_APP_PORT = 4000;
 export const API_URL_BASE = 'api';
 
 export enum METHOD {

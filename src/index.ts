@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 
-import { createServerInstance } from './app/createServer';
+import { runApp } from './app/app';
 
 dotenv.config();
 
-createServerInstance();
+runApp();
