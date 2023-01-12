@@ -2,50 +2,24 @@ import cluster from 'cluster';
 import http, { IncomingMessage, RequestOptions, ServerResponse } from 'http';
 
 import { IWorkerToPortMap } from '../shared/server/server.interface';
-
-export const createWorker = (port: number): string => {
-  const clusterEnv = {
-    APP_PORT: port,
-  };
-  const worker = cluster.fork(clusterEnv);
-  const workerProcessKey = (worker.process.pid as number).toString();
-
-  return workerProcessKey;
-};
-
-// TODO: rework load balancer to use class instance instead of closure
-const initialWorkerIndex = 0;
-let currentWorkerIndex = initialWorkerIndex;
-
-const getWorkerPortByRoundRobin = (workersToPortMap: IWorkerToPortMap): number => {
-  const totalWorkers = Object.keys(workersToPortMap).length;
-
-  const port = Object.values(workersToPortMap)[currentWorkerIndex];
-
-  if (currentWorkerIndex === totalWorkers - 1) {
-    currentWorkerIndex = initialWorkerIndex;
-  } else {
-    currentWorkerIndex += 1;
-  }
-
-  return port;
-};
+import { createWorker } from './createWorker';
+import { LoadBalancer } from './loadBalancer';
 
 export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPortMap): void => {
-  const workerToPortMap: IWorkerToPortMap = { ...workersMap };
+  const loadBalancer = new LoadBalancer(workersMap);
 
   cluster.on('exit', (worker) => {
-    const deadWorkerKey = (worker.process.pid as number).toString();
-    const workerPort = workerToPortMap[deadWorkerKey] as number;
-    const workerProcessKey = createWorker(workerPort);
+    const deadWorkerPid = worker.process.pid as number;
+    const deadWorkerPort = loadBalancer.getWorkerPortByPid(deadWorkerPid);
+    const newWorkerPid = createWorker(deadWorkerPort);
 
-    workerToPortMap[workerProcessKey] = workerPort;
-    delete workerToPortMap[deadWorkerKey];
+    loadBalancer.removeWorkerKeyByPid(deadWorkerPid);
+    loadBalancer.addWorkerPidToMap(newWorkerPid, deadWorkerPort);
   });
 
   // TODO: await for workers start and control that worker not crushed (workers.length or something else)
   const server = http.createServer((appRequest: IncomingMessage, appResponse: ServerResponse) => {
-    const workerToRequestPort = getWorkerPortByRoundRobin(workerToPortMap);
+    const workerToRequestPort = loadBalancer.getWorkerPortByRoundRobin();
 
     const requestToWorkerOptions: RequestOptions = {
       ...appRequest,

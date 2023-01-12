@@ -3,8 +3,9 @@ import cluster from 'cluster';
 
 import { DEFAULT_APP_PORT } from '../shared/server/http.constants';
 import { createServerInstance } from './createServer';
-import { createLoadBalancerServer, createWorker } from './loadBalancerServer';
+import { createLoadBalancerServer } from './loadBalancerServer';
 import { IWorkerToPortMap } from '../shared/server/server.interface';
+import { createWorker } from './createWorker';
 
 const cpusCount = cpus().length;
 // TODO: create separate common storage with running server
@@ -28,9 +29,9 @@ export const runApp = () => {
 
     for (let i = 0; i < cpusCount; i += 1) {
       const workerPort = Number(APP_PORT) + i + 1;
-      const workerProcessKey = createWorker(workerPort);
+      const workerProcessId = createWorker(workerPort);
 
-      workerToPortMap[workerProcessKey] = workerPort;
+      workerToPortMap[workerProcessId] = workerPort;
     }
 
     createLoadBalancerServer(Number(APP_PORT), workerToPortMap);
