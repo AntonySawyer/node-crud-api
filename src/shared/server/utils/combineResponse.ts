@@ -27,7 +27,7 @@ export const combineResponseWithError = (
   response: ServerResponse,
   error: AppError,
 ): void => {
-  // TODO
+  // TODO: logging
   // console.error(error);
   let errorMessage: string = error.message || INTERNAL_ERROR_MESSAGE;
   let statusCode: STATUS_CODE = STATUS_CODE.INTERNAL_SERVER_ERROR;
