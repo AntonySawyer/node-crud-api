@@ -26,6 +26,7 @@ export const runApp = () => {
   if (shouldUseCluster && cluster.isPrimary) {
     cluster.schedulingPolicy = cluster.SCHED_RR;
     const workerToPortMap: IWorkerToPortMap = {};
+    let listeningWorkersCount = 0;
 
     for (let i = 0; i < cpusCount; i += 1) {
       const workerPort = Number(APP_PORT) + i + 1;
@@ -34,7 +35,13 @@ export const runApp = () => {
       workerToPortMap[workerProcessId] = workerPort;
     }
 
-    createLoadBalancerServer(Number(APP_PORT), workerToPortMap);
+    cluster.on('listening', () => {
+      listeningWorkersCount += 1;
+
+      if (listeningWorkersCount === cpusCount) {
+        createLoadBalancerServer(Number(APP_PORT), workerToPortMap);
+      }
+    });
   } else {
     createServerInstance(Number(APP_PORT));
   }

@@ -17,7 +17,6 @@ export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPort
     loadBalancer.addWorkerPidToMap(newWorkerPid, deadWorkerPort);
   });
 
-  // TODO: await for workers start and control that worker not crushed (workers.length or something else)
   const server = http.createServer((appRequest: IncomingMessage, appResponse: ServerResponse) => {
     const workerToRequestPort = loadBalancer.getWorkerPortByRoundRobin();
 
