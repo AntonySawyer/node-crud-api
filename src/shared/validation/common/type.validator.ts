@@ -53,7 +53,7 @@ export const validateArrayElementsType = <TArrayEl>(array: TArrayEl[], expectedT
   });
 
   if (someElementHaveWrongType) {
-    const errorMessage = getIncorrectArrayElementTypeErrorMessage(fieldName as string, expectedType);
+    const errorMessage = getIncorrectArrayElementTypeErrorMessage(fieldName, expectedType);
 
     throw new ValidationError(errorMessage);
   }

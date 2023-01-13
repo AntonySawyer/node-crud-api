@@ -1,9 +1,16 @@
-import { IncomingMessage } from 'http';
 import url from 'url';
 
-export const getRouteParts = (request: IncomingMessage): string[] => {
-  const { pathname } = url.parse(request.url as string);
-  const [, ...routeParts] = (pathname as string).split('/');
+import { IClientIncomingMessage } from '../server.interface';
+import { BadRequestError } from '../../error/errorInstance';
+
+export const getRouteParts = (request: IClientIncomingMessage): string[] => {
+  const { pathname } = url.parse(request.url);
+
+  if (pathname === null) {
+    throw new BadRequestError();
+  }
+
+  const [, ...routeParts] = pathname.split('/');
 
   return routeParts;
 };

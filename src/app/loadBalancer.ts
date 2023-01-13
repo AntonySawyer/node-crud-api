@@ -22,18 +22,18 @@ export class LoadBalancer {
     return port;
   };
 
-  public getWorkerPortByPid = (pid: number): number => {
-    const workerPort = this.workerToPortMap[pid];
+  public getWorkerPortById = (id: number): number => {
+    const workerPort = this.workerToPortMap[id];
 
     return workerPort;
   };
 
-  public removeWorkerKeyByPid = (pid: number): void => {
-    delete this.workerToPortMap[pid];
+  public removeWorkerKeyById = (id: number): void => {
+    delete this.workerToPortMap[id];
   };
 
-  public addWorkerPidToMap = (workerPid: number, port: number): void => {
-    this.workerToPortMap[workerPid] = port;
+  public addWorkerIdToMap = (workerId: number, port: number): void => {
+    this.workerToPortMap[workerId] = port;
   };
 
   private modifyCurrentWorkerIndex = (): void => {

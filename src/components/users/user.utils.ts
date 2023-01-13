@@ -1,8 +1,8 @@
-import { IncomingMessage } from 'http';
+import { IClientIncomingMessage } from 'src/shared/server/server.interface';
 
 import { getRouteParts } from '../../shared/server/utils/getRouteParts';
 
-export const getUserIdFromRequest = (request: IncomingMessage): string => {
+export const getUserIdFromRequest = (request: IClientIncomingMessage): string => {
   const userIdIndex = 2;
   const routeParts = getRouteParts(request);
   const userId = routeParts[userIdIndex];

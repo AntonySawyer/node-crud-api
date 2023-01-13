@@ -1,9 +1,11 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { ServerResponse } from 'http';
+
 import { METHOD } from './http.constants';
+import { IClientIncomingMessage } from './server.interface';
 
 export interface IRouteDefinition {
   basePath: string;
-  execute: (request: IncomingMessage, response: ServerResponse) => Promise<void>;
+  execute: (request: IClientIncomingMessage, response: ServerResponse) => Promise<void>;
   method: METHOD;
   pathParts?: string[];
   shouldHaveBody: boolean;

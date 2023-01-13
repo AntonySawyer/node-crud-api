@@ -9,12 +9,12 @@ export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPort
   const loadBalancer = new LoadBalancer(workersMap);
 
   cluster.on('exit', (worker) => {
-    const deadWorkerPid = worker.process.pid as number;
-    const deadWorkerPort = loadBalancer.getWorkerPortByPid(deadWorkerPid);
-    const newWorkerPid = createWorker(deadWorkerPort);
+    const deadWorkerId = worker.id;
+    const deadWorkerPort = loadBalancer.getWorkerPortById(deadWorkerId);
+    const newWorkerId = createWorker(deadWorkerPort);
 
-    loadBalancer.removeWorkerKeyByPid(deadWorkerPid);
-    loadBalancer.addWorkerPidToMap(newWorkerPid, deadWorkerPort);
+    loadBalancer.removeWorkerKeyById(deadWorkerId);
+    loadBalancer.addWorkerIdToMap(newWorkerId, deadWorkerPort);
   });
 
   const server = http.createServer((appRequest: IncomingMessage, appResponse: ServerResponse) => {

@@ -5,7 +5,6 @@ export const createWorker = (port: number): number => {
     APP_PORT: port,
   };
   const worker = cluster.fork(clusterEnv);
-  const workerProcessId = worker.process.pid as number;
 
-  return workerProcessId;
+  return worker.id;
 };

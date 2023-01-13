@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { ServerResponse } from 'http';
 
 import storage from './user.storage';
 import { STATUS_CODE } from '../../shared/server/http.constants';
@@ -8,8 +8,9 @@ import userValidatorInstance from './user.validator';
 import { NotFoundError, AppError, BadRequestError } from '../../shared/error/errorInstance';
 import { getRequestBody } from '../../shared/server/utils/requestBody';
 import { getUserIdFromRequest } from './user.utils';
+import { IClientIncomingMessage } from '../../shared/server/server.interface';
 
-export const getAllUsers = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+export const getAllUsers = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   try {
     const users: IUserResponse[] = await storage.getUsers();
 
@@ -19,7 +20,7 @@ export const getAllUsers = async (request: IncomingMessage, response: ServerResp
   }
 };
 
-export const getUserById = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+export const getUserById = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   const id = getUserIdFromRequest(request);
 
   try {
@@ -33,7 +34,7 @@ export const getUserById = async (request: IncomingMessage, response: ServerResp
   }
 };
 
-export const createUser = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+export const createUser = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   const body = await getRequestBody<IUserRequest>(request);
 
   try {
@@ -51,7 +52,7 @@ export const createUser = async (request: IncomingMessage, response: ServerRespo
   }
 };
 
-export const updateUser = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+export const updateUser = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   const id = getUserIdFromRequest(request);
 
   const body = await getRequestBody<IUserRequest>(request);
@@ -71,7 +72,7 @@ export const updateUser = async (request: IncomingMessage, response: ServerRespo
   }
 };
 
-export const deleteUserById = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
+export const deleteUserById = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   const id = getUserIdFromRequest(request);
 
   try {
