@@ -8,7 +8,7 @@ import { IWorkerToPortMap } from '../shared/server/server.interface';
 import { createWorker } from './createWorker';
 
 const cpusCount = cpus().length;
-// TODO: create separate common storage with running server
+
 export const runApp = () => {
   const {
     APP_PORT = DEFAULT_APP_PORT,

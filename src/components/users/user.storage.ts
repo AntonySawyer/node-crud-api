@@ -1,36 +1,43 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { IUserResponse, IUserRequest } from './user.interface';
-import { AppError, NotFoundError, InternalError } from '../../shared/error/errorInstance';
+import { AppError, InternalError } from '../../shared/error/errorInstance';
 import { COMMON_ERROR_MESSAGE } from '../../shared/error/error.message';
+import { IGenericRepository } from '../../shared/storage/interface';
+import { GenericRepository } from '../../shared/storage/repository';
 
 type UserStorageInitial = {
-  users?: IUserResponse[];
+  storage: IGenericRepository<IUserResponse>;
+  initialUsers?: IUserResponse[];
 };
 
 class UserStorageInterface {
-  constructor(parameters?: UserStorageInitial) {
-    this.users = parameters?.users ?? [];
+  constructor({ storage, initialUsers }: UserStorageInitial) {
+    this.storage = storage;
+
+    if (initialUsers) {
+      initialUsers.forEach((initialUser) => {
+        this.storage.create(initialUser.id, initialUser);
+      });
+    }
   }
 
-  private users;
+  private storage: IGenericRepository<IUserResponse>;
 
   public async getUsers(): Promise<IUserResponse[]> {
-    if (this.users) {
-      return this.users;
+    const users = await this.storage.find();
+
+    if (users) {
+      return users;
     }
 
     throw new InternalError();
   }
 
-  public async getUserByIdOrThrowNotFound(id: string): Promise<IUserResponse | null> {
-    const user = this.users.find((userItem) => userItem.id === id);
+  public async getUserByIdOrThrowNotFound(id: string): Promise<IUserResponse | undefined> {
+    const user = await this.storage.findById(id);
 
-    if (user) {
-      return user;
-    }
-
-    throw new NotFoundError();
+    return user;
   }
 
   public async createUser(newUser: IUserRequest): Promise<IUserResponse> {
@@ -45,7 +52,7 @@ class UserStorageInterface {
         id: uuid,
       };
 
-      this.users.push(user);
+      await this.storage.create(uuid, user);
 
       return user;
     } catch (error) {
@@ -61,15 +68,7 @@ class UserStorageInterface {
       ...userToUpdate,
     };
 
-    const updatedUsers = this.users.map((userItem) => {
-      if (userItem.id === userId) {
-        return updatedUser;
-      }
-
-      return userItem;
-    });
-
-    this.users = updatedUsers;
+    await this.storage.updateById(userId, updatedUser);
 
     return updatedUser;
   }
@@ -77,12 +76,14 @@ class UserStorageInterface {
   public async deleteUserById(id: string): Promise<void> {
     await this.getUserByIdOrThrowNotFound(id);
 
-    const usersWithoutDeleted = this.users.filter((userItem) => userItem.id !== id);
-
-    this.users = usersWithoutDeleted;
+    await this.storage.removeById(id);
   }
 }
 
-const userStorage = new UserStorageInterface();
+const userRepository = new GenericRepository<IUserResponse>();
+const userStorage = new UserStorageInterface({
+  storage: userRepository,
+  initialUsers: [],
+});
 
 export default userStorage;
