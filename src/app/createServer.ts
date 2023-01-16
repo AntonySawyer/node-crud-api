@@ -1,10 +1,10 @@
 import cluster from 'cluster';
-import http from 'http';
+import http, { Server } from 'http';
 
 import { requestListenerWithErrorHandling } from './requestListenerWithErrorHandling';
 import { logger } from '../shared/server/utils/logger';
 
-export const createServerInstance = (port: number): void => {
+export const createServerInstance = (port: number): Server => {
   const server = http.createServer(requestListenerWithErrorHandling);
 
   server.listen(port, () => {
@@ -14,4 +14,6 @@ export const createServerInstance = (port: number): void => {
       logger(`Worker at port ${port}`);
     }
   });
+
+  return server;
 };

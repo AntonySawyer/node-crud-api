@@ -1,5 +1,6 @@
 import { cpus } from 'os';
 import cluster from 'cluster';
+import { Server } from 'http';
 
 import { DEFAULT_APP_PORT } from '../shared/server/http.constants';
 import { createServerInstance } from './createServer';
@@ -9,7 +10,9 @@ import { createWorker } from './createWorker';
 
 const cpusCount = cpus().length;
 
-export const runApp = () => {
+export const runApp = (): Server => {
+  let server;
+
   const {
     APP_PORT = DEFAULT_APP_PORT,
     USE_CLUSTER,
@@ -18,9 +21,9 @@ export const runApp = () => {
   const shouldUseCluster = USE_CLUSTER === 'true';
 
   if (!shouldUseCluster) {
-    createServerInstance(Number(APP_PORT));
+    server = createServerInstance(Number(APP_PORT));
 
-    return;
+    return server;
   }
 
   if (shouldUseCluster && cluster.isPrimary) {
@@ -39,10 +42,12 @@ export const runApp = () => {
       listeningWorkersCount += 1;
 
       if (listeningWorkersCount === cpusCount) {
-        createLoadBalancerServer(Number(APP_PORT), workerToPortMap);
+        server = createLoadBalancerServer(Number(APP_PORT), workerToPortMap);
       }
     });
   } else {
-    createServerInstance(Number(APP_PORT));
+    server = createServerInstance(Number(APP_PORT));
   }
+
+  return server as Server;
 };

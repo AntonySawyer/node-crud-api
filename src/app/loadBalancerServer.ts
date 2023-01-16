@@ -1,12 +1,17 @@
 import cluster from 'cluster';
-import http, { IncomingMessage, RequestOptions, ServerResponse } from 'http';
+import http, {
+  IncomingMessage,
+  RequestOptions,
+  Server,
+  ServerResponse,
+} from 'http';
 
 import { IWorkerToPortMap } from '../shared/server/server.interface';
 import { createWorker } from './createWorker';
 import { LoadBalancer } from './loadBalancer';
 import { logger } from '../shared/server/utils/logger';
 
-export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPortMap): void => {
+export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPortMap): Server => {
   const loadBalancer = new LoadBalancer(workersMap);
 
   cluster.on('exit', (worker) => {
@@ -45,4 +50,6 @@ export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPort
   server.listen(port, () => {
     logger(`Server at port ${port}`);
   });
+
+  return server;
 };
