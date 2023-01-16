@@ -6,7 +6,7 @@ import http, {
   ServerResponse,
 } from 'http';
 
-import { IWorkerToPortMap } from '../shared/server/server.interface';
+import { IWorkerToPortMap } from '../shared/server/interface';
 import { createWorker } from './createWorker';
 import { LoadBalancer } from './loadBalancer';
 import { logger } from '../shared/server/utils/logger';

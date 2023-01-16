@@ -1,6 +1,6 @@
 import url from 'url';
 
-import { IClientIncomingMessage } from '../server.interface';
+import { IClientIncomingMessage } from '../interface';
 import { BadRequestError } from '../../error/errorInstance';
 
 export const getRouteParts = (request: IClientIncomingMessage): string[] => {

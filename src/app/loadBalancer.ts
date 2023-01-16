@@ -1,4 +1,4 @@
-import { IWorkerToPortMap } from '../shared/server/server.interface';
+import { IWorkerToPortMap } from '../shared/server/interface';
 
 const INITIAL_WORKER_INDEX = 0;
 

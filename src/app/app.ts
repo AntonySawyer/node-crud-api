@@ -2,10 +2,10 @@ import { cpus } from 'os';
 import cluster from 'cluster';
 import { Server } from 'http';
 
-import { DEFAULT_APP_PORT } from '../shared/server/http.constants';
+import { DEFAULT_APP_PORT } from '../shared/server/constants';
 import { createServerInstance } from './createServer';
 import { createLoadBalancerServer } from './loadBalancerServer';
-import { IWorkerToPortMap } from '../shared/server/server.interface';
+import { IWorkerToPortMap } from '../shared/server/interface';
 import { createWorker } from './createWorker';
 
 const cpusCount = cpus().length;

@@ -1,4 +1,4 @@
-import { getRequiredErrorMessage } from '../../error/error.message';
+import { getRequiredErrorMessage } from '../../error/messages';
 import { ValidationError } from '../../error/errorInstance';
 
 const validateRequiredString = (value: string, fieldName: string): void => {

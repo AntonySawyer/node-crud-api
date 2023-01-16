@@ -1,14 +1,14 @@
 import { ServerResponse } from 'http';
 
-import storage from './user.storage';
-import { STATUS_CODE } from '../../shared/server/http.constants';
-import { IUserResponse, IUserRequest } from './user.interface';
+import storage from './storage';
+import { STATUS_CODE } from '../../shared/server/constants';
+import { IUserResponse, IUserRequest } from './interface';
 import { combineResponse, combineResponseWithError } from '../../shared/server/utils/combineResponse';
-import userValidatorInstance from './user.validator';
+import userValidatorInstance from './validator';
 import { NotFoundError, AppError, BadRequestError } from '../../shared/error/errorInstance';
 import { getRequestBody } from '../../shared/server/utils/requestBody';
-import { getUserIdFromRequest } from './user.utils';
-import { IClientIncomingMessage } from '../../shared/server/server.interface';
+import { getUserIdFromRequest } from './utils';
+import { IClientIncomingMessage } from '../../shared/server/interface';
 
 export const getAllUsers = async (request: IClientIncomingMessage, response: ServerResponse): Promise<void> => {
   try {

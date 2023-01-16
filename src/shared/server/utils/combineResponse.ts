@@ -6,8 +6,8 @@ import {
   NotFoundError,
   ValidationError,
 } from '../../error/errorInstance';
-import { CONTENT_TYPE, STATUS_CODE } from '../http.constants';
-import { BAD_REQUEST_ERROR_MESSAGE, INTERNAL_ERROR_MESSAGE } from '../../error/error.message';
+import { CONTENT_TYPE, STATUS_CODE } from '../constants';
+import { BAD_REQUEST_ERROR_MESSAGE, INTERNAL_ERROR_MESSAGE } from '../../error/messages';
 import { logger } from './logger';
 
 export const combineResponse = <TBody>(response: ServerResponse, code: STATUS_CODE, body?: TBody): void => {

@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   target: 'node',
   externals: [nodeExternals()],
-  entry: './build/index.js',
+  entry: './build/src/index.js',
   output: {
     path: path.join(__dirname, 'bundle'),
     filename: 'bundle.js',

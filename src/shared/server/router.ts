@@ -1,9 +1,8 @@
 import url from 'url';
 
-import { IRouteDefinition } from './router.interface';
 import { getRouteParts } from './utils/getRouteParts';
 import { BadRequestError, NotFoundError } from '../error/errorInstance';
-import { IClientIncomingMessage } from './server.interface';
+import { IClientIncomingMessage, IRouteDefinition } from './interface';
 
 class Router {
   private routes: IRouteDefinition[] = [];

@@ -1,5 +1,4 @@
-import { IClientIncomingMessage } from 'src/shared/server/server.interface';
-
+import { IClientIncomingMessage } from '../../shared/server/interface';
 import { getRouteParts } from '../../shared/server/utils/getRouteParts';
 
 export const getUserIdFromRequest = (request: IClientIncomingMessage): string => {

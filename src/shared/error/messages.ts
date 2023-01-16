@@ -1,4 +1,4 @@
-import { FIELD_TYPE } from '../validation/validation.constants';
+import { FIELD_TYPE } from '../validation/constants';
 
 /* eslint-disable max-len */
 export const BAD_REQUEST_ERROR_MESSAGE = 'Server cannot or will not process the request due to something that is perceived to be a client error.';

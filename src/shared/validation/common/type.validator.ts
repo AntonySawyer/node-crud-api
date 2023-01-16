@@ -1,6 +1,6 @@
-import { getIncorrectArrayElementTypeErrorMessage, getIncorrectFieldTypeErrorMessage } from '../../error/error.message';
+import { getIncorrectArrayElementTypeErrorMessage, getIncorrectFieldTypeErrorMessage } from '../../error/messages';
 import { ValidationError } from '../../error/errorInstance';
-import { FIELD_TYPE } from '../validation.constants';
+import { FIELD_TYPE } from '../constants';
 
 const validateType = <TValue>(value: TValue, type: FIELD_TYPE): boolean => {
   let isFieldTypeValid = false;

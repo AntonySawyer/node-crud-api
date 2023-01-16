@@ -3,7 +3,7 @@ import supertest from 'supertest';
 import { v4 as uuidv4 } from 'uuid';
 
 import { runApp } from '../../app/app';
-import { IUserRequest, IUserResponse } from './user.interface';
+import { IUserRequest, IUserResponse } from './interface';
 
 let server: Server;
 let request: supertest.SuperTest<supertest.Test>;
@@ -205,7 +205,7 @@ describe('Users', () => {
   });
 
   describe('DELETE `api/users/:id`', () => {
-    test('valid id - should remove user', async () => {
+    test('valid id - should remove user and this `id` will return 404 later', async () => {
       const user = await createUser();
       const { id: idToDelete } = user;
       const response = await request.delete(`/api/users/${idToDelete}`);

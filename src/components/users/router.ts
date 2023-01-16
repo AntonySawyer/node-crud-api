@@ -1,15 +1,15 @@
-import { METHOD } from '../../shared/server/http.constants';
+import { METHOD } from '../../shared/server/constants';
 import { ROUTE } from '../../shared/server/routes';
-import { IRouteDefinition } from '../../shared/server/router.interface';
 import Router from '../../shared/server/router';
-import { USER_ROUTE_ARG } from './user.constants';
+import { USER_ROUTE_ARG } from './constants';
 import {
   createUser,
   deleteUserById,
   getAllUsers,
   getUserById,
   updateUser,
-} from './user.controller';
+} from './controller';
+import { IRouteDefinition } from '../../shared/server/interface';
 
 const USER_ROUTES_MAP: IRouteDefinition[] = [
   {

@@ -1,4 +1,4 @@
-import { BAD_REQUEST_ERROR_MESSAGE } from '../error.message';
+import { BAD_REQUEST_ERROR_MESSAGE } from '../messages';
 import { AppError } from './appError';
 
 export class BadRequestError extends AppError {

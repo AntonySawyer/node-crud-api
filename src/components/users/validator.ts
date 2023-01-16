@@ -1,5 +1,5 @@
-import { FIELD_TYPE } from '../../shared/validation/validation.constants';
-import { IUserRequest } from './user.interface';
+import { FIELD_TYPE } from '../../shared/validation/constants';
+import { IUserRequest } from './interface';
 import { validateAge } from '../../shared/validation/specific/age.validator';
 import { validateRequiredField } from '../../shared/validation/common/required.validator';
 import { validateFieldType, validateArrayElementsType } from '../../shared/validation/common/type.validator';
