@@ -8,6 +8,7 @@ import {
 } from '../../error/errorInstance';
 import { CONTENT_TYPE, STATUS_CODE } from '../http.constants';
 import { BAD_REQUEST_ERROR_MESSAGE, INTERNAL_ERROR_MESSAGE } from '../../error/error.message';
+import { logger } from './logger';
 
 export const combineResponse = <TBody>(response: ServerResponse, code: STATUS_CODE, body?: TBody): void => {
   response.setHeader('Content-Type', CONTENT_TYPE.APP_JSON);
@@ -27,8 +28,7 @@ export const combineResponseWithError = (
   response: ServerResponse,
   error: AppError,
 ): void => {
-  // TODO: logging
-  // console.error(error);
+  logger(error);
   let errorMessage: string = error.message || INTERNAL_ERROR_MESSAGE;
   let statusCode: STATUS_CODE = STATUS_CODE.INTERNAL_SERVER_ERROR;
 

@@ -4,6 +4,7 @@ import http, { IncomingMessage, RequestOptions, ServerResponse } from 'http';
 import { IWorkerToPortMap } from '../shared/server/server.interface';
 import { createWorker } from './createWorker';
 import { LoadBalancer } from './loadBalancer';
+import { logger } from '../shared/server/utils/logger';
 
 export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPortMap): void => {
   const loadBalancer = new LoadBalancer(workersMap);
@@ -42,7 +43,6 @@ export const createLoadBalancerServer = (port: number, workersMap: IWorkerToPort
   });
 
   server.listen(port, () => {
-    // TODO: logging
-    console.log(`Server at port ${port}`);
+    logger(`Server at port ${port}`);
   });
 };
