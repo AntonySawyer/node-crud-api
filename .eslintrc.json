@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "airbnb-base",
+    "airbnb-typescript/base"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": [
+      "./tsconfig.json"
+    ]
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "import/prefer-default-export": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": [
+          "enum"
+        ],
+        "format": [
+          "UPPER_CASE"
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": []
+}
